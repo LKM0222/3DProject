@@ -5022,7 +5022,7 @@ GameObject:
   - component: {fileID: 4463786555856795893}
   m_Layer: 0
   m_Name: Item Heart
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
