@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
     public int damage;
     public bool isMelee;
+    public bool isRock;
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Floor") //탄피
+        if(!isRock && collision.gameObject.tag == "Floor") //탄피
         {
             Destroy(gameObject, 3f);
         }
