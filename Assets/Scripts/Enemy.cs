@@ -26,7 +26,7 @@ public class Enemy : MonoBehaviour
             curHealth -= weapon.damage;
             Vector3 reactVect = transform.position - other.transform.position;
 
-            StartCoroutine(OnDamage(reactVect));
+            StartCoroutine(OnDamage(reactVect, false));
         }
         else if(other.tag == "Bullet")
         {
@@ -34,12 +34,20 @@ public class Enemy : MonoBehaviour
             curHealth -= bullet.damage;
             Vector3 reactVect = transform.position - other.transform.position;
             Destroy(other.gameObject);
-            
-            StartCoroutine(OnDamage(reactVect));
+
+            StartCoroutine(OnDamage(reactVect, false));
         }
     }
 
-    IEnumerator OnDamage(Vector3 reactVect)
+    public void HitByGrenade(Vector3 explosionPos)
+    {
+        curHealth -= 100;
+        Vector3 reactVect = transform.position - explosionPos;
+
+        StartCoroutine(OnDamage(reactVect, true));
+    }
+
+    IEnumerator OnDamage(Vector3 reactVect, bool isGrenade)
     {
         mat.color = Color.red;
         yield return new WaitForSeconds(0.1f);
@@ -53,10 +61,22 @@ public class Enemy : MonoBehaviour
             mat.color = Color.gray;
             gameObject.layer = 12;
 
-            reactVect = reactVect.normalized;
-            reactVect += Vector3.up;
+            if(isGrenade)
+            {
+                reactVect = reactVect.normalized;
+                reactVect += Vector3.up * 3f;
 
-            rigid.AddForce(reactVect * 5, ForceMode.Impulse);
+                rigid.freezeRotation = false;
+                rigid.AddForce(reactVect * 5, ForceMode.Impulse); //피격
+                rigid.AddTorque(reactVect * 15, ForceMode.Impulse); //회전
+            }
+            else
+            {
+                reactVect = reactVect.normalized;
+                reactVect += Vector3.up;
+                rigid.AddForce(reactVect * 5, ForceMode.Impulse); //피격
+            }
+
 
             Destroy(gameObject, 4f);
         }
