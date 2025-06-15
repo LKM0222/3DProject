@@ -10,9 +10,14 @@ public class Enemy : MonoBehaviour
     public Type enemyType;
     public int maxHealth;
     public int curHealth;
+    public int score;
+
+    public GameManager manager;
     public Transform target;
     public BoxCollider meleeArea;
     public GameObject bullet;
+    public GameObject[] coins;
+
     public bool isChase;
     public bool isAttack;
     public bool isDead;
@@ -213,6 +218,36 @@ public class Enemy : MonoBehaviour
             nav.enabled = false; // 꺼 줘야 Die모션이 활성화됨.
             anim.SetTrigger("doDie");
 
+            Player player = target.GetComponent<Player>();
+            player.score += score;
+
+            int ranCoin = Random.Range(0,3); //코인 생성
+            Instantiate(coins[ranCoin], transform.position, Quaternion.identity);
+
+            switch(enemyType)
+            {
+                case Type.A:
+                {
+                    manager.enemyCntA --;
+                }
+                break;
+                case Type.B:
+                {
+                    manager.enemyCntB --;
+                }
+                break;
+                case Type.C:
+                {
+                    manager.enemyCntC --;
+                }
+                break;
+                case Type.D:
+                {
+                    manager.enemyCntD --;
+                }
+                break;
+            }
+
             if(isGrenade)
             {
                 reactVect = reactVect.normalized;
@@ -229,7 +264,7 @@ public class Enemy : MonoBehaviour
                 rigid.AddForce(reactVect * 5, ForceMode.Impulse); //피격
             }
 
-            if(enemyType != Type.D) Destroy(gameObject, 4f);
+            Destroy(gameObject, 4f);
         }
     }
 }
