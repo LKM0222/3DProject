@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public int ammo;
     public int coin;
     public int health;
+    public int score;
 
     public int maxAmmo;
     public int maxCoin;
@@ -52,7 +53,7 @@ public class Player : MonoBehaviour
     MeshRenderer[] meshs; //플레이어 오브젝트가 여러개로 이뤄져있기때문에 배열 사용
 
     [SerializeField] GameObject nearObject;
-    Weapon equipWeapon;
+    public Weapon equipWeapon;
     int equipWeaponIndex = -1;
     float fireDeley;
 
@@ -61,6 +62,9 @@ public class Player : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
+
+        //PlayerPrefs.SetInt("MaxScore", 112500);
+        Debug.Log($"{PlayerPrefs.GetInt("MaxScore")}");
     }
 
     // Update is called once per frame
