@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
     public int score;
 
     public GameManager manager;
+    public PoolManager poolManager;
     public Transform target;
     public BoxCollider meleeArea;
     public GameObject bullet;
@@ -28,7 +29,7 @@ public class Enemy : MonoBehaviour
     protected NavMeshAgent nav;
     protected Animator anim;
 
-
+    //Life Cycle
     void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -36,8 +37,6 @@ public class Enemy : MonoBehaviour
         meshs = GetComponentsInChildren<MeshRenderer>();
         nav = GetComponent<NavMeshAgent>();
         anim = GetComponentInChildren<Animator>();
-
-        if(enemyType != Type.D) Invoke("ChaseStart", 2f);
     }
 
     void Update()
@@ -55,27 +54,8 @@ public class Enemy : MonoBehaviour
         FreezeVelocity();
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if(other.tag == "Melee")
-        {
-            Weapon weapon = other.GetComponent<Weapon>();
-            curHealth -= weapon.damage;
-            Vector3 reactVect = transform.position - other.transform.position;
-
-            StartCoroutine(OnDamage(reactVect, false));
-        }
-        else if(other.tag == "Bullet")
-        {
-            Bullet bullet = other.GetComponent<Bullet>();
-            curHealth -= bullet.damage;
-            Vector3 reactVect = transform.position - other.transform.position;
-            Destroy(other.gameObject);
-
-            StartCoroutine(OnDamage(reactVect, false));
-        }
-    }
-
+    
+    // public Method
     public void HitByGrenade(Vector3 explosionPos)
     {
         curHealth -= 100;
@@ -84,6 +64,12 @@ public class Enemy : MonoBehaviour
         StartCoroutine(OnDamage(reactVect, true));
     }
 
+    public void IsEnable()
+    {
+        if(enemyType != Type.D) Invoke("ChaseStart", 2f);
+    }
+
+    // private Method
     void FreezeVelocity()
     {   
         if(isChase)
@@ -138,6 +124,29 @@ public class Enemy : MonoBehaviour
 
     }
 
+    // Collision
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Melee")
+        {
+            Weapon weapon = other.GetComponent<Weapon>();
+            curHealth -= weapon.damage;
+            Vector3 reactVect = transform.position - other.transform.position;
+
+            StartCoroutine(OnDamage(reactVect, false));
+        }
+        else if(other.tag == "Bullet")
+        {
+            Bullet bullet = other.GetComponent<Bullet>();
+            curHealth -= bullet.damage;
+            Vector3 reactVect = transform.position - other.transform.position;
+            Destroy(other.gameObject);
+
+            StartCoroutine(OnDamage(reactVect, false));
+        }
+    }
+
+    // Coroutine
     IEnumerator Attack()
     {   
         //먼저 정시를 한 다음, 애니메이션과 함께 공격범위 활성화
@@ -264,7 +273,8 @@ public class Enemy : MonoBehaviour
                 rigid.AddForce(reactVect * 5, ForceMode.Impulse); //피격
             }
 
-            Destroy(gameObject, 4f);
+            // Destroy(gameObject, 4f);
+            manager.poolManager.InsertQueue(gameObject);
         }
     }
 }

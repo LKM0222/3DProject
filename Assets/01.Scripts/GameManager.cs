@@ -23,8 +23,11 @@ public class GameManager : MonoBehaviour
     public int enemyCntC;
     public int enemyCntD;
     
+
+    //PoolManager로 이동
+    public PoolManager poolManager;
     public Transform[] enemyZones;
-    public GameObject[] enemies;
+    
     public List<int> enemyList;
 
     public GameObject menuPanel;
@@ -184,14 +187,17 @@ public class GameManager : MonoBehaviour
         if(stage % 5 == 0)
         {
             enemyCntD++;
-            GameObject instantEnemy = Instantiate(enemies[3], enemyZones[0].position, enemyZones[0].rotation);
+            // GameObject instantEnemy = Instantiate(enemies[3], enemyZones[0].position, enemyZones[0].rotation);
 
-            Enemy enemy = instantEnemy.GetComponent<Enemy>();
+            // Enemy enemy = instantEnemy.GetComponent<Enemy>();
+            Enemy enemy = poolManager.GetQueue(3).GetComponent<Enemy>();
+
             enemy.target = player.transform;
-
             enemy.manager = this;
+            enemy.transform.position = enemyZones[0].position;
+            enemy.IsEnable();
 
-            boss = instantEnemy.GetComponent<Boss>();
+            boss = enemy.gameObject.GetComponent<Boss>();
         }
         else
         {
@@ -206,10 +212,10 @@ public class GameManager : MonoBehaviour
                         enemyCntA++;
                         break;
                     case 1:
-                        enemyCntA++;
+                        enemyCntB++;
                         break;
                     case 2:
-                        enemyCntA++;
+                        enemyCntC++;
                         break;
                 }
             }
@@ -217,10 +223,14 @@ public class GameManager : MonoBehaviour
             while(enemyList.Count > 0)
             {
                 int ranZone = Random.Range(0,4);
-                GameObject instantEnemy = Instantiate(enemies[enemyList[0]], enemyZones[ranZone].position, enemyZones[ranZone].rotation);
-                Enemy enemy = instantEnemy.GetComponent<Enemy>();
+                // pool로 이동
+                Enemy enemy = poolManager.GetQueue(enemyList[0]).GetComponent<Enemy>();
+                
                 enemy.target = player.transform;
                 enemy.manager = this;
+                enemy.transform.position = enemyZones[ranZone].position;
+                enemy.IsEnable();
+
                 enemyList.RemoveAt(0);
                 yield return new WaitForSeconds(4f);
             }
