@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: HelthUp1
   m_EditorClassIdentifier: 
   effectName: "\uCD5C\uB300 \uCCB4\uB825 \uC99D\uAC00 1"
-  effectDiscription: "\uCD5C\uB300 \uCC44\uB825\uC744 50 \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
+  effectDiscription: "\uCD5C\uB300 \uCC44\uB825\uC744 50 \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4.
+    (\uCCB4\uB825\uC774 \uC804\uBD80 \uD68C\uBCF5\uB429\uB2C8\uB2E4.)"
   effectValue: 50
   effectMulti: 1
   effectLevel: 1
