@@ -20,11 +20,13 @@ public class Player : MonoBehaviour
     public int coin;
     public int health;
     public int score;
+    public int exp;
 
     public int maxAmmo;
     public int maxCoin;
     public int maxHealth;
     public int maxHasGrenades;
+    public int maxExp;
 
 
     float hAxis;
@@ -61,6 +63,9 @@ public class Player : MonoBehaviour
     public Weapon equipWeapon;
     int equipWeaponIndex = -1;
     float fireDeley;
+
+    [Header("Effect")]
+    public float coinMulti = 1f;
 
     void Awake()
     {
@@ -307,6 +312,21 @@ public class Player : MonoBehaviour
         manager.GameOver();
     }
 
+    public void GetEXP(int _exp)
+    {
+        exp += _exp;
+        
+        if(exp > maxExp)
+        {
+            Time.timeScale = 0f;
+
+            exp = maxExp;
+            
+            manager.effectPanel.SetActive(true);
+            manager.effectManager.Initialized();
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Floor")
@@ -332,7 +352,7 @@ public class Player : MonoBehaviour
 
                 case Item.Type.Coin:
                 {
-                    coin += item.value;
+                    coin += (int)(item.value * coinMulti);
                     if(coin > maxCoin) coin = maxCoin;
                 }
                 break;

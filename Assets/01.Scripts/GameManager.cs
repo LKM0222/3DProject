@@ -21,8 +21,7 @@ public class GameManager : MonoBehaviour
     public int enemyCntA;
     public int enemyCntB;
     public int enemyCntC;
-    public int enemyCntD;
-    
+    public int enemyCntD;    
 
     //PoolManager로 이동
     public PoolManager poolManager;
@@ -55,8 +54,14 @@ public class GameManager : MonoBehaviour
 
     public RectTransform bossHealthGroup;
     public RectTransform bossHealthBar;
+
+    public RectTransform playerExpBar;
+    public Text playerExpText;
     public Text curScoreText;
     public Text bestText;
+
+    public GameObject effectPanel;
+    public EffectManager effectManager;
 
     void Awake()
     {   
@@ -107,6 +112,10 @@ public class GameManager : MonoBehaviour
         enemyBText.text = enemyCntB.ToString();
         enemyCText.text = enemyCntC.ToString();
 
+        //EXP
+        playerExpBar.localScale = new Vector3((float)player.exp / player.maxExp, 1, 1);
+        playerExpText.text = $"{player.exp}/{player.maxExp}";
+
         // 보스 UI
         if(boss != null)
         {
@@ -117,6 +126,8 @@ public class GameManager : MonoBehaviour
         {
             bossHealthGroup.anchoredPosition = Vector3.up * 200f;
         }
+
+
     }
 
     public void GameStart()

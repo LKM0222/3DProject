@@ -11,9 +11,10 @@ public class Enemy : MonoBehaviour
     public int maxHealth;
     public int curHealth;
     public int score;
+    public int exp;
 
     public GameManager manager;
-    public PoolManager poolManager;
+    // public PoolManager poolManager;
     public Transform target;
     public BoxCollider meleeArea;
     public GameObject bullet;
@@ -229,6 +230,7 @@ public class Enemy : MonoBehaviour
 
             Player player = target.GetComponent<Player>();
             player.score += score;
+            player.GetEXP(exp);
 
             int ranCoin = Random.Range(0,3); //코인 생성
             Instantiate(coins[ranCoin], transform.position, Quaternion.identity);

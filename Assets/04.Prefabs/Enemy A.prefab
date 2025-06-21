@@ -123,7 +123,9 @@ MonoBehaviour:
   maxHealth: 50
   curHealth: 50
   score: 100
+  exp: 10
   manager: {fileID: 0}
+  poolManager: {fileID: 0}
   target: {fileID: 0}
   meleeArea: {fileID: 8838240177480188328}
   bullet: {fileID: 0}
