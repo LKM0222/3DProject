@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,30 +24,33 @@ public class EffectManager : MonoBehaviour
 
     public void Initialized()
     {
-        int ran = 0;
-        foreach(GameObject btn in effectBtns)
+        //무작위 증강 선택
+        List<Effect> eftlst = GetRandomElemets<Effect>(effects, 3);
+
+        for(int i = 0; i < effectBtns.Count; i++)
         {
-            //무작위 증강 선택
-            ran = Random.Range(0, effects.Count);
+            EffectButton eftBtn = effectBtns[i].GetComponent<EffectButton>();
 
-            //선택 된 증강을 버튼에 초기화
-            EffectButton eftBtn = btn.GetComponent<EffectButton>(); //이거 왜 Null..?
+            eftBtn.nameText.text = eftlst[i].effectName;
+            eftBtn.discriptionText.text = eftlst[i].effectDiscription;
+            eftBtn.effectImg.sprite = eftlst[i].effectImg;
+            eftBtn.effect = eftlst[i];
 
-            eftBtn.nameText.text = effects[ran].effectName;
-            eftBtn.discriptionText.text = effects[ran].effectDiscription;
-            eftBtn.effectImg.sprite = effects[ran].effectImg;
-            eftBtn.effect = effects[ran];
-
-            //버튼 클릭 이벤트에 effect의 이벤트 등록 (기존 등록된 리스너는 제거해야됨.)
-            btn.GetComponent<Button>().onClick.RemoveAllListeners();
-            btn.GetComponent<Button>().onClick.AddListener(() => {
+            effectBtns[i].GetComponent<Button>().onClick.RemoveAllListeners();
+            effectBtns[i].GetComponent<Button>().onClick.AddListener(() => {
                 OnClick_Effect(eftBtn.effect); //이거 괜찮나..?
 
                 Time.timeScale = 1f;
                 gameManager.effectPanel.SetActive(false);
             });
-
         }
+    }
+
+    List<T> GetRandomElemets<T>(List<T> list, int count)    // 중복없이 n개 추출
+    {
+        List<T> shuffled = list.OrderBy(x => UnityEngine.Random.value).ToList();
+
+        return shuffled.Take(count).ToList();
     }
 
     public void OnClick_Effect(Effect effect)
@@ -53,15 +58,16 @@ public class EffectManager : MonoBehaviour
         switch(effect.effectType)
         {
             case EffectType.HEALTH:
-                gameManager.player.maxHealth += effect.effectLevel * effect.effectMulti;
+                gameManager.player.maxHealth += (int)effect.effectValue * effect.effectMulti;
+                gameManager.player.health = gameManager.player.maxHealth;
             break;
 
             case EffectType.COIN:
-                gameManager.player.coinMulti += effect.effectLevel * effect.effectMulti; 
+                gameManager.player.coinMulti += effect.effectValue * effect.effectMulti; 
             break;
 
             case EffectType.AMMO:
-                gameManager.player.maxAmmo += effect.effectLevel * effect.effectMulti;
+                gameManager.player.maxAmmo += (int)effect.effectValue * effect.effectMulti;
             break;
         }
         // Debug.Log($"Effect : {effect.effectName}/{effect.effectDiscription}");
