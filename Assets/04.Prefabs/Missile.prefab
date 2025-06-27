@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 15
+  isMelee: 0
+  isRock: 0
 --- !u!1 &3234457512256573017
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,7 +161,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b7f684c70702ad4498c01dd7a2ce0b3c, type: 2}
+  - {fileID: 2100000, guid: 32babab08ef8fb946a04894f4c99f434, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
