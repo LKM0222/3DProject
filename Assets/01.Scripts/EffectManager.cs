@@ -73,7 +73,8 @@ public class EffectManager : MonoBehaviour
     public void OnClick_Effect(Effect effect)
     {
         if (effect == null) return;
-        // 타입별 함수 디스패치로 효과 적용
+        // 딕셔너리에서 effectType와 같은 요소를 찾아서 apply로 받아옴.
+        // apply는 delegate함수이기 때문에 해당 함수에 effect 전달해서 효과 적용
         if (applyEffectByType.TryGetValue(effect.effectType, out var apply))
         {
             apply(effect);
