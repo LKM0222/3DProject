@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,12 +22,12 @@ public class GameManager : MonoBehaviour
     public int enemyCntA;
     public int enemyCntB;
     public int enemyCntC;
-    public int enemyCntD;    
+    public int enemyCntD;
 
     //PoolManager로 이동
     public PoolManager poolManager;
     public Transform[] enemyZones;
-    
+
     public List<int> enemyList;
 
     public GameObject menuPanel;
@@ -64,11 +65,11 @@ public class GameManager : MonoBehaviour
     public EffectManager effectManager;
 
     void Awake()
-    {   
+    {
         enemyList = new List<int>();
-        maxScoreText.text = string.Format("{0:n0}",PlayerPrefs.GetInt("MaxScore"));
+        maxScoreText.text = string.Format("{0:n0}", PlayerPrefs.GetInt("MaxScore"));
 
-        if(PlayerPrefs.HasKey("MaxScore"))
+        if (PlayerPrefs.HasKey("MaxScore"))
         {
             PlayerPrefs.SetInt("MaxScore", 0);
         }
@@ -76,14 +77,14 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if(isBattle)
+        if (isBattle)
         {
             playTime += Time.deltaTime;
         }
     }
 
     void LateUpdate()
-    {   
+    {
         //상단 UI
         scoreText.text = string.Format("{0:n0}", player.score);
         stageText.text = "STAGE " + stage;
@@ -97,16 +98,16 @@ public class GameManager : MonoBehaviour
         playerHelthText.text = player.health + "/" + player.maxHealth;
         playerCoinText.text = string.Format("{0:n0}", player.coin);
 
-        if(player.equipWeapon == null || player.equipWeapon.type == Weapon.Type.Melee)
+        if (player.equipWeapon == null || player.equipWeapon.type == Weapon.Type.Melee)
             playerAmmoText.text = "-" + "/" + player.ammo;
         else
             playerAmmoText.text = player.equipWeapon.curAmmo + "/" + player.ammo;
 
         //하단 UI
-        weapon1Img.color = new Color(1,1,1, player.hasWeapons[0] ? 1 : 0);
-        weapon2Img.color = new Color(1,1,1, player.hasWeapons[1] ? 1 : 0);
-        weapon3Img.color = new Color(1,1,1, player.hasWeapons[2] ? 1 : 0);
-        weaponRImg.color = new Color(1,1,1, player.hasGrenades > 0 ? 1 : 0);
+        weapon1Img.color = new Color(1, 1, 1, player.hasWeapons[0] ? 1 : 0);
+        weapon2Img.color = new Color(1, 1, 1, player.hasWeapons[1] ? 1 : 0);
+        weapon3Img.color = new Color(1, 1, 1, player.hasWeapons[2] ? 1 : 0);
+        weaponRImg.color = new Color(1, 1, 1, player.hasGrenades > 0 ? 1 : 0);
 
         enemyAText.text = enemyCntA.ToString();
         enemyBText.text = enemyCntB.ToString();
@@ -117,7 +118,7 @@ public class GameManager : MonoBehaviour
         playerExpText.text = $"{player.exp}/{player.maxExp}";
 
         // 보스 UI
-        if(boss != null)
+        if (boss != null)
         {
             bossHealthGroup.anchoredPosition = Vector3.down * 30f;
             bossHealthBar.localScale = new Vector3((float)boss.curHealth / boss.maxHealth, 1, 1);
@@ -142,12 +143,12 @@ public class GameManager : MonoBehaviour
     }
 
     public void StageStart()
-    {   
+    {
         itemShop.SetActive(false);
         weaponShop.SetActive(false);
         startZone.SetActive(false);
 
-        foreach(Transform zone in enemyZones)
+        foreach (Transform zone in enemyZones)
         {
             zone.gameObject.SetActive(true);
         }
@@ -157,14 +158,14 @@ public class GameManager : MonoBehaviour
     }
 
     public void StageEnd()
-    {      
+    {
         player.transform.position = Vector3.up * 0.8f;
 
         itemShop.SetActive(true);
         weaponShop.SetActive(true);
         startZone.SetActive(true);
 
-        foreach(Transform zone in enemyZones)
+        foreach (Transform zone in enemyZones)
         {
             zone.gameObject.SetActive(false);
         }
@@ -181,7 +182,7 @@ public class GameManager : MonoBehaviour
         curScoreText.text = scoreText.text;
 
         int maxScore = PlayerPrefs.GetInt("MaxScore");
-        if(player.score > maxScore)
+        if (player.score > maxScore)
         {
             bestText.gameObject.SetActive(true);
             PlayerPrefs.SetInt("MaxScore", player.score);
@@ -194,14 +195,12 @@ public class GameManager : MonoBehaviour
     }
 
     IEnumerator InBattle()
-    {   
-        if(stage % 5 == 0)
+    {
+        if (stage % 5 == 0)
         {
             enemyCntD++;
-            // GameObject instantEnemy = Instantiate(enemies[3], enemyZones[0].position, enemyZones[0].rotation);
 
-            // Enemy enemy = instantEnemy.GetComponent<Enemy>();
-            Enemy enemy = poolManager.GetQueue(3).GetComponent<Enemy>();
+            Enemy enemy = poolManager.GetQueue(Enemy.Type.D).GetComponent<Enemy>();
 
             enemy.target = player.transform;
             enemy.manager = this;
@@ -212,12 +211,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            for(int index = 0; index < stage; index++)
+            for (int index = 0; index < stage; index++)
             {
-                int ran = Random.Range(0,3);
+                int ran = UnityEngine.Random.Range(0, 3);
                 enemyList.Add(ran);
 
-                switch(ran)
+                switch (ran)
                 {
                     case 0:
                         enemyCntA++;
@@ -231,12 +230,13 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            while(enemyList.Count > 0)
+            while (enemyList.Count > 0)
             {
-                int ranZone = Random.Range(0,4);
-                // pool로 이동
-                Enemy enemy = poolManager.GetQueue(enemyList[0]).GetComponent<Enemy>();
-                
+                int ranZone = UnityEngine.Random.Range(0, 4);
+                Enemy.Type type = Enum.Parse<Enemy.Type>(enemyList[0].ToString());
+
+                Enemy enemy = poolManager.GetQueue(type).GetComponent<Enemy>();
+
                 enemy.target = player.transform;
                 enemy.manager = this;
                 enemy.transform.position = enemyZones[ranZone].position;
@@ -247,13 +247,13 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        while(enemyCntA + enemyCntB + enemyCntC + enemyCntD > 0)
+        while (enemyCntA + enemyCntB + enemyCntC + enemyCntD > 0)
         {
             yield return null;
         }
 
         yield return new WaitForSeconds(4f);
-        
+
         boss = null;
         StageEnd();
     }

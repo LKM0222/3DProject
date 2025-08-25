@@ -24756,7 +24756,7 @@ GameObject:
   - component: {fileID: 350422523}
   - component: {fileID: 350422522}
   m_Layer: 0
-  m_Name: Enemy Pool
+  m_Name: PoolManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24774,14 +24774,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac466bab22503643960adcc9daf4b87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyAPref: {fileID: 286356482360269818, guid: c97af1b2cd9e1e249b1b0b23f7f99530, type: 3}
-  enemyAGroup: {fileID: 1481106537}
-  enemyBPref: {fileID: 3619194315156691702, guid: bc165a95bab3a724081f3afb9236fc7b, type: 3}
-  enemyBGroup: {fileID: 1151940961}
-  enemyCPref: {fileID: 3133492075097961, guid: 2e1cd2f563faf674d92294e53b593009, type: 3}
-  enemyCGroup: {fileID: 536220161}
-  enemyDPref: {fileID: 596500327196420750, guid: d8e8aa27ed53e3a4e805588f1ec270a0, type: 3}
-  enemyDGroup: {fileID: 685158265}
+  pools:
+  - type: 0
+    prefab: {fileID: 286356482360269818, guid: c97af1b2cd9e1e249b1b0b23f7f99530, type: 3}
+    parent: {fileID: 1481106537}
+    initialCount: 20
+  - type: 1
+    prefab: {fileID: 3619194315156691702, guid: bc165a95bab3a724081f3afb9236fc7b, type: 3}
+    parent: {fileID: 1151940961}
+    initialCount: 20
+  - type: 2
+    prefab: {fileID: 3133492075097961, guid: 2e1cd2f563faf674d92294e53b593009, type: 3}
+    parent: {fileID: 536220161}
+    initialCount: 20
+  - type: 3
+    prefab: {fileID: 596500327196420750, guid: d8e8aa27ed53e3a4e805588f1ec270a0, type: 3}
+    parent: {fileID: 685158265}
+    initialCount: 2
 --- !u!4 &350422523
 Transform:
   m_ObjectHideFlags: 0
@@ -24790,12 +24799,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 350422521}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 322.1322, y: 147.27528, z: 6.2159553}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1429113931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &350446923 stripped
 Transform:
@@ -42567,7 +42576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   computeOverride: 0
-  _depthTex: {fileID: 938601755}
+  _depthTex: {fileID: 1143016485}
   bakedDepthTex: {fileID: 0}
   _waves:
   - amplitude: 0.30540264
@@ -159908,44 +159917,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2422033995633054637, guid: d0495817613f7b64abc573c7b37e30ef, type: 3}
   m_PrefabInstance: {fileID: 1191712917}
   m_PrefabAsset: {fileID: 0}
---- !u!84 &938601755
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: WaterDepthMap
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1024
-  m_Height: 1024
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1001 &942312391
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -167383,6 +167354,44 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2422033995633054637, guid: d0495817613f7b64abc573c7b37e30ef, type: 3}
   m_PrefabInstance: {fileID: 733368300}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &1143016485
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterDepthMap
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1024
+  m_Height: 1024
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 94
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1144564814
 GameObject:
   m_ObjectHideFlags: 0
@@ -192832,6 +192841,7 @@ Transform:
   m_Children:
   - {fileID: 958545179}
   - {fileID: 1318991253}
+  - {fileID: 350422523}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1429489011
@@ -246870,7 +246880,6 @@ SceneRoots:
   - {fileID: 1636530607}
   - {fileID: 1161931442}
   - {fileID: 1693887459}
-  - {fileID: 350422523}
   - {fileID: 1481106537}
   - {fileID: 1151940961}
   - {fileID: 536220161}

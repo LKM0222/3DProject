@@ -4,104 +4,81 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    [SerializeField] GameObject enemyAPref;
-    [SerializeField] Transform enemyAGroup;
-    [SerializeField] GameObject enemyBPref;
-    [SerializeField] Transform enemyBGroup;
-    [SerializeField] GameObject enemyCPref;
-    [SerializeField] Transform enemyCGroup;
-    [SerializeField] GameObject enemyDPref;
-    [SerializeField] Transform enemyDGroup;
+    [System.Serializable]
+    public class PoolConfig
+    {
+        public Enemy.Type type;
+        public GameObject prefab;
+        public Transform parent;
+        public int initialCount = 10;
+    }
 
-    public Queue<GameObject> enemyAQueue = new Queue<GameObject>();
-    public Queue<GameObject> enemyBQueue = new Queue<GameObject>();
-    public Queue<GameObject> enemyCQueue = new Queue<GameObject>();
-    public Queue<GameObject> enemyDQueue = new Queue<GameObject>();
+    [SerializeField] List<PoolConfig> pools = new List<PoolConfig>();
+
+    readonly Dictionary<Enemy.Type, Queue<GameObject>> poolMap = new Dictionary<Enemy.Type, Queue<GameObject>>();
 
     void Start()
     {
-        for(int i = 0; i< 40; i++)
+        Init();
+    }
+
+    private void Init()
+    {
+        foreach (var config in pools)
         {
-            GameObject go = Instantiate(enemyAPref, enemyAGroup);
-            go.SetActive(false);
-            enemyAQueue.Enqueue(go);
-        }
-        for(int i = 0; i< 40; i++)
-        {
-            GameObject go = Instantiate(enemyBPref, enemyBGroup);
-            go.SetActive(false);
-            enemyBQueue.Enqueue(go);
-        }
-        for(int i = 0; i< 40; i++)
-        {
-            GameObject go = Instantiate(enemyCPref, enemyCGroup);
-            go.SetActive(false);
-            enemyCQueue.Enqueue(go);
-        }
-        for(int i = 0; i< 2; i++)
-        {
-            GameObject go = Instantiate(enemyDPref, enemyDGroup);
-            go.SetActive(false);
-            enemyDQueue.Enqueue(go);
+            if (!poolMap.ContainsKey(config.type))
+            {
+                poolMap[config.type] = new Queue<GameObject>();
+            }
+
+            for (int i = 0; i < Mathf.Max(0, config.initialCount); i++)
+            {
+                GameObject go = Instantiate(config.prefab, config.parent);
+                go.SetActive(false);
+                poolMap[config.type].Enqueue(go);
+            }
         }
     }
 
     public void InsertQueue(GameObject _e)
-    {   
+    {
         Enemy enemy = _e.GetComponent<Enemy>();
-        
-        switch(enemy.enemyType)
+        if (!poolMap.ContainsKey(enemy.enemyType))
         {
-            case Enemy.Type.A: 
-                enemyAQueue.Enqueue(_e);
-                _e.SetActive(false);
-            break;
-
-            case Enemy.Type.B: 
-                enemyBQueue.Enqueue(_e);
-                _e.SetActive(false);
-            break;
-
-            case Enemy.Type.C: 
-                enemyCQueue.Enqueue(_e);
-                _e.SetActive(false);
-            break;
-            
-            default: 
-                enemyDQueue.Enqueue(_e);
-                _e.SetActive(false);
-            break;
+            poolMap[enemy.enemyType] = new Queue<GameObject>();
         }
+
+        poolMap[enemy.enemyType].Enqueue(_e);
+        _e.SetActive(false);
         enemy.isChase = false;
     }
 
-    public GameObject GetQueue(int index)
-    {   
+    public GameObject GetQueue(Enemy.Type type)
+    {
         GameObject resultObj;
-
-        switch(index)
+        if (!poolMap.ContainsKey(type))
         {
-            case 0:
-                resultObj = enemyAQueue.Dequeue();
-                resultObj.SetActive(true);
-            break;
-
-            case 1:
-                resultObj = enemyBQueue.Dequeue();
-                resultObj.SetActive(true);
-            break;
-
-            case 2:
-                resultObj = enemyCQueue.Dequeue();
-                resultObj.SetActive(true);
-            break;
-
-            default:
-                resultObj = enemyDQueue.Dequeue();
-                resultObj.SetActive(true);
-            break;
+            poolMap[type] = new Queue<GameObject>();
         }
 
+        // 필요 시 자동 확장
+        if (poolMap[type].Count == 0)
+        {
+            var config = pools.Find(p => p.type == type);
+            if (config != null && config.prefab != null)
+            {
+                var created = Instantiate(config.prefab, config.parent);
+                created.SetActive(false);
+                poolMap[type].Enqueue(created);
+            }
+            else
+            {
+                Debug.LogWarning($"[PoolManager] 풀에 해당 타입의 프리팹 설정이 없습니다: {type}");
+            }
+        }
+
+        resultObj = poolMap[type].Dequeue();
+        resultObj.SetActive(true);
         return resultObj;
     }
 }
