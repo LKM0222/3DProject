@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Assets/QuarterView%203D%20Action%20BE5/Sprites/Title.png" alt="QuadAction" width="320">
+</p>
+
 # QuadAction
 
 쿼터뷰 시점의 3D 액션 슈팅 게임입니다. 골드메탈의 "쿼터뷰 3D 액션게임" 강좌를 기반으로 시작해,
@@ -70,24 +74,6 @@
 1. Unity 2022.3.30f1 (LTS)로 프로젝트를 엽니다.
 2. `Assets/00.Scenes/SampleScene.unity` 를 엽니다.
 3. Play 버튼으로 실행합니다.
-
-## 프로젝트 구조
-
-```
-Assets/
-├── 00.Scenes/          씬 파일
-├── 01.Scripts/         게임 로직
-│   ├── GameManager.cs      게임/스테이지/UI 흐름 총괄
-│   ├── Player.cs           플레이어 조작·상태
-│   ├── Weapon.cs           무기 (근접/원거리)
-│   ├── Enemy.cs / Boss.cs  적 AI, 보스 패턴
-│   ├── PoolManager.cs      적 오브젝트 풀링
-│   ├── EffectManager.cs    레벨업 증강 시스템
-│   ├── Effect.cs           증강 데이터 (ScriptableObject)
-│   ├── Shop.cs             상점 구매 로직
-│   └── ...
-└── ...
-```
 
 ## 크레딧
 
